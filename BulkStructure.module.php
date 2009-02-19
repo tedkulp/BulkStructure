@@ -50,7 +50,7 @@ class BulkStructure extends CMSModule
 
   function GetVersion()
   {
-    return '0.1';
+    return '0.2';
   }
 
   function GetHelp()
@@ -147,6 +147,41 @@ function fetch_url($url)
       }
 }
 
+function process_page($in=array())
+{
+	$ret = implode("\n",$in);
+	$sdel = $this->GetPreference('start_delimiter','/<body[^>]*>/i');
+    $edel = $this->GetPreference('end_delimiter','/<\/body>/i');
+	$ret = preg_replace($sdel,'X|XSTARTX|X',$ret);
+	$ret = preg_replace($edel,'X|XENDX|X',$ret);
+	$ret = substr($ret,stripos($ret,'X|XSTARTX|X')+11);
+    $ret = substr($ret,0,stripos($ret,'X|XENDX|X'));
+	if ($this->GetPreference('remove_scripts','0') == '1')
+		{
+		$ret = preg_replace('/<script/i','X|XSTARTX|X',$ret);
+		$ret = preg_replace('/<\/script>/i','X|XENDX|X',$ret);
+		while (strpos($ret,'X|XSTARTX|X') !== false)
+			{
+			$ret = substr($ret,0,strpos($ret,'X|XSTARTX|X')) .
+				substr($ret,strpos($ret,'X|XENDX|X')+9);
+			error_log('-----------------------------------------------');
+			error_log($ret);
+			}
+		}
+	if ($this->GetPreference('remove_markup','0') == '1')
+		{
+		$ret = strip_tags($ret,$this->GetPreference('allowed_tags','<p><a><i><b><strong><em><ul><li><ol><sup><sub>'));
+		}
+	if ($this->GetPreference('fix_smarty','0') == '1')
+		{
+		$ret = str_replace('{','X|XSTARTX|X',$ret);
+		$ret = str_replace('}','X|XENDX|X',$ret);
+		$ret = str_replace('X|XSTARTX|X','{ldelim}',$ret);
+		$ret = str_replace('X|XENDX|X','{rdelim}',$ret);
+		}
+
+	return $ret;
+}
   
 }
 ?>

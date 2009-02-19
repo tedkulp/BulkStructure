@@ -8,11 +8,24 @@ $lang['title_insert_lorem'] = 'Paragraphs of <em>Lorem Ipsum</em> to insert in e
 $lang['none'] = 'None';
 $lang['title_template_to_use'] = 'Template to use for pages';
 $lang['title_file'] = 'Structure File';
+$lang['title_start_delimiter'] = 'Starting delimiter in migrated pages (regex allowed)';
+$lang['title_end_delimiter'] = 'Ending delimiter in migrated pages (regex allowed)';
+$lang['title_remove_markup'] = 'Remove markup from migrated pages?';
+$lang['title_allowed_tags'] = 'If removing markup, what tags should be left in migrated pages';
+$lang['title_remove_scripts'] = 'Try to remove Javascript from migrated pages?';
+$lang['title_fix_smarty'] = 'Try to fix things that will hose smarty?';
 $lang['created'] = 'Created page %s.';
-
+$lang['bulk'] = 'Bulk Structure';
+$lang['settings'] = 'Migration Settings';
+$lang['submit_go'] = 'Go!';
+$lang['title_migration_help'] = 'If you are using this tool to migrate an external site to CMSMS, you can use these settings to fine-tune the process. You will still doubtless need to do some clean-up by hand, but this should save you a lot of effort.';
 $lang['upload_error'] = 'Upload error: %s';
 $lang['moddescription'] = 'This module allows the bulk import of site structure.';
+$lang['updated_settings'] = 'Updated Migration settings.';
+$lang['nag'] = 'Annoying Nagging from the Author';
+$lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site.</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least $%s!</strong></p>';
 $lang['changelog'] = '<ul>
+<li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying programmer.</li>
 <li>Version 0.1, Feb 2009 SjG, Initial Version</li>
 </ul>';
 $lang['lorem'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla pellentesque, lectus ac posuere ultrices, mauris nibh feugiat nunc, ac lobortis augue pede ac odio. Morbi consequat nulla et lacus. Donec pellentesque dapibus nisl. Nulla et arcu ut ipsum faucibus sagittis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis sit amet libero. Proin dapibus. Donec facilisis est sed magna. Vestibulum lorem lectus, venenatis ac, tempus quis, sollicitudin in, arcu. Donec sagittis neque. Quisque viverra. Sed volutpat. Quisque vitae justo et urna lacinia consequat. Mauris blandit, mauris vitae tempus adipiscing, libero mi ornare enim, eu mollis nisl nisl a nisi. Praesent condimentum, pede sed tempor hendrerit, enim lacus posuere ligula, a hendrerit est elit quis mauris. Ut pellentesque. Nullam faucibus, ipsum in accumsan euismod, ligula mi ullamcorper ante, non fermentum augue pede vitae nisi.</p>
