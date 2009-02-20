@@ -15,6 +15,14 @@ if (isset($params['submit']))
 		{
 		$this->SetPreference('allowed_tags', trim($params['allowed_tags']));
 		}
+	if (isset($params['title_regex']))
+		{
+		$this->SetPreference('title_regex', trim($params['title_regex']));
+		}
+	if (isset($params['title_regex_repl']))
+		{
+		$this->SetPreference('title_regex_repl', trim($params['title_regex_repl']));
+		}
 	
 	$this->SetPreference('remove_markup',(isset($params['remove_markup'])?$params['remove_markup']:'0'));
 	$this->SetPreference('remove_scripts',(isset($params['remove_scripts'])?$params['remove_scripts']:'0'));
@@ -56,8 +64,13 @@ $smarty->assign('title_remove_markup',$this->Lang('title_remove_markup'));
 $smarty->assign('title_allowed_tags',$this->Lang('title_allowed_tags'));
 $smarty->assign('title_remove_scripts',$this->Lang('title_remove_scripts'));
 $smarty->assign('title_fix_smarty',$this->Lang('title_fix_smarty'));
+$smarty->assign('title_title_regex',$this->Lang('title_title_regex'));
+$smarty->assign('title_title_regex_repl',$this->Lang('title_title_regex_repl'));
+$smarty->assign('title_regex_help',$this->Lang('title_regex_help'));
+$smarty->assign('title_menutext_munge',$this->Lang('title_menutext_munge'));
 $smarty->assign('title_migration_help',$this->Lang('title_migration_help'));
-
+$smarty->assign('title_delete_content',$this->Lang('title_delete_content'));
+$smarty->assign('title_delete_sure',$this->Lang('title_delete_sure'));
 
 $templateops =& $gCms->GetTemplateOperations();
 
@@ -81,6 +94,13 @@ $smarty->assign('input_fix_smarty',
 $smarty->assign('input_allowed_tags',
 	$this->CreateInputText($id, 'allowed_tags',
 	$this->GetPreference('allowed_tags','<p><a><i><b><strong><em><ul><li><ol><sup><sub>'),40));
+$smarty->assign('input_title_regex',
+	$this->CreateInputText($id, 'title_regex', $this->GetPreference('title_regex',''),25));
+$smarty->assign('input_title_regex_repl',
+	$this->CreateInputText($id, 'title_regex_repl', $this->GetPreference('title_regex_repl',''),25));
+$smarty->assign('input_delete_content',
+	$this->CreateInputCheckbox($id, 'delete_content', '1', '0', "id=\"del_cont_check\" onclick='vcheck()'").
+	$this->Lang('title_delete_content'));
 
 
 

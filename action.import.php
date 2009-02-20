@@ -13,7 +13,17 @@ else
    $showinmenu = ((get_site_preference('page_showinmenu',"1")=="1")?true:false);
    $metadata = get_site_preference('page_metadata');
    $userid = get_userid();
-	$contentops =& $gCms->GetContentOperations();
+   if (isset($params['delete_content']) && $params['delete_content'] == '1')
+		{
+		$db = &$gCms->GetDb();
+		$db->debug = true;
+		echo "<p>".$this->Lang('deleting')."</p>\n";
+		$query = 'delete from '.cms_db_prefix().'content';
+		$dbresult = $db->Execute($query);
+		$query = 'delete from '.cms_db_prefix().'content_props';
+		$dbresult = $db->Execute($query);
+		}
+   $contentops =& $gCms->GetContentOperations();
    $lorem = explode('|',$this->Lang('lorem'));
    $loremstr = '';
    for($i=0;$i<$params['insert_lorem'];$i++)
@@ -35,7 +45,15 @@ else
          $name = preg_replace('/^[-]+/','',$details[0]);
          $alias = preg_replace('/[^a-zA-Z0-9]/','-',$name);
          $contentobj = $contentops->CreateNewContent('content');
-         $contentobj->SetMenuText($name);
+		 if ($this->GetPreference('title_regex','') != '' && preg_match($this->GetPreference('title_regex'),$name))
+			{
+			$mtext = preg_replace($this->GetPreference('title_regex',''),$this->GetPreference('title_regex_repl',''),$name);
+			}
+		 else
+			{
+			$mtext = $name;
+			}
+         $contentobj->SetMenuText($mtext);
          $contentobj->mName = $name;
          $alias = munge_string_to_url($alias, true);
 		 // Make sure auto-generated new alias is not already in use on a different page

@@ -164,8 +164,6 @@ function process_page($in=array())
 			{
 			$ret = substr($ret,0,strpos($ret,'X|XSTARTX|X')) .
 				substr($ret,strpos($ret,'X|XENDX|X')+9);
-			error_log('-----------------------------------------------');
-			error_log($ret);
 			}
 		}
 	if ($this->GetPreference('remove_markup','0') == '1')
