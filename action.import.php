@@ -1,13 +1,20 @@
 <?php
 if (!isset($gCms)) exit;
 
-if (!empty($_FILES[$id.'ulfile']['error']))
+if (empty($params['structure']) && !empty($_FILES[$id.'ulfile']['error']))
    {
    echo $this->Lang('upload_error',$_FILES[$id.'ulfile']['error']);
    }
 else
    {
-   $listing = file($_FILES[$id.'ulfile']['tmp_name']);
+   if (isset($_FILES[$id.'ulfile']['tmp_name']) && !empty($_FILES[$id.'ulfile']['tmp_name']))
+      {
+      $listing = file($_FILES[$id.'ulfile']['tmp_name']);
+      }
+   else
+     {
+	 $listing = explode("\n",$params['structure']);
+     }
    $page_cachable = ((get_site_preference('page_cachable',"1")=="1")?true:false);
    $active = ((get_site_preference('page_active',"1")=="1")?true:false);
    $showinmenu = ((get_site_preference('page_showinmenu',"1")=="1")?true:false);
@@ -35,28 +42,49 @@ else
    $parents = array();
    $p_count = 0;
    $m_count = 0;
+   $listing = array_filter($listing, array($this,'remove_comments'));
+
    foreach ($listing as $thisPage)
       {
-      $thisPage = preg_replace('/\n|\r/','',$thisPage);
+      $thisPage = trim(preg_replace('/\n|\r/','',$thisPage));
       if (!empty($thisPage))
          {
+		 if (preg_match('/\[([^\]]+)\]/',$thisPage,$menutextarr))
+			{
+			$mtext = $menutextarr[1];
+			$thisPage = preg_replace('/\[[^\]]+\]/','',$thisPage);
+			}
+		 else
+		    {
+			$mtext = '';
+		    }
+		 if (preg_match('/\{([^\}]+)\}/',$thisPage,$aliasarr))
+			{
+			$alias = $aliasarr[1];
+			$thisPage = preg_replace('/\{[^\}]+\}/','',$thisPage);
+			}
+		 else
+		    {
+			$alias = '';
+		    }
+
          $details = explode('|',$thisPage);
          $thisdepth = substr_count($details[0],'-');
          $name = preg_replace('/^[-]+/','',$details[0]);
-         $alias = preg_replace('/[^a-zA-Z0-9]/','-',$name);
-         $contentobj = $contentops->CreateNewContent('content');
-		 if ($this->GetPreference('title_regex','') != '' && preg_match($this->GetPreference('title_regex'),$name))
-			{
-			$mtext = preg_replace($this->GetPreference('title_regex',''),$this->GetPreference('title_regex_repl',''),$name);
-			}
-		 else
+ 		 if ($mtext == '')
 			{
 			$mtext = $name;
 			}
-         $contentobj->SetMenuText($mtext);
-         $contentobj->mName = $name;
+        if ($alias == '')
+			{
+		    $alias = preg_replace('/[^a-zA-Z0-9]/','-',$mtext);
+	        }
+ 		 $contentobj = $contentops->CreateNewContent('content');
+         $contentobj->SetMenuText(trim($mtext));
+         $contentobj->mName = trim($name);
          $alias = munge_string_to_url($alias, true);
 		 // Make sure auto-generated new alias is not already in use on a different page
+		 $alias = trim($alias);
 		 $error = $contentops->CheckAliasError($alias);
 		 if ($error !== FALSE)
 		    {
@@ -78,14 +106,20 @@ else
          $populated_content = false;
          if (count($details) > 1)
             {
-            $fetched = $this->fetch_url($details[1]);
-            if ($fetched !== false)
-               {
-               $content = $this->process_page($fetched);
-               $contentobj->SetPropertyValue('content_en', $content);
+			$flist = explode(',',$details[1]);
+			$content = '';
+			foreach ($flist as $thisFetch)
+				{
+            	$fetched = $this->fetch_url(trim($thisFetch));
+
+	            if ($fetched !== false)
+	               {
+	               $content .= $this->process_page($fetched);
+                   $m_count += 1;
+	               }
+				}
+			   $contentobj->SetPropertyValue('content_en', $content);
                $populated_content = true;
-               $m_count += 1;
-               }
             }
          if (!$populated_content)
             {

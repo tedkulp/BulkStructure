@@ -113,6 +113,16 @@ class BulkStructure extends CMSModule
     return $this->Lang('event_help_'.$eventname );
   }
   
+
+  function SuppressAdminOutput(&$request)
+  {
+	if (strpos($_SERVER['QUERY_STRING'],'get_sample') !== false)
+        {
+        return true;
+        }
+     return false;
+  }
+
 function fetch_url($url)
 {
    if (function_exists('curl_init'))
@@ -147,6 +157,16 @@ function fetch_url($url)
       }
 }
 
+function remove_comments($inp)
+{
+	$s = substr($inp,0,1);
+	if ($s == '#' || $s == ';')
+		{
+		return false;
+		}
+	return true;
+}
+
 function process_page($in=array())
 {
 	$ret = implode("\n",$in);
@@ -168,7 +188,7 @@ function process_page($in=array())
 		}
 	if ($this->GetPreference('remove_markup','0') == '1')
 		{
-		$ret = strip_tags($ret,$this->GetPreference('allowed_tags','<p><a><i><b><strong><em><ul><li><ol><sup><sub>'));
+		$ret = strip_tags($ret,$this->GetPreference('allowed_tags','<p><a><img><i><b><strong><em><ul><li><ol><sup><sub>'));
 		}
 	if ($this->GetPreference('fix_smarty','0') == '1')
 		{

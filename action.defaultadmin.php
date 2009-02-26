@@ -15,15 +15,13 @@ if (isset($params['submit']))
 		{
 		$this->SetPreference('allowed_tags', trim($params['allowed_tags']));
 		}
-	if (isset($params['title_regex']))
+	if (isset($params['asset_path']))
 		{
-		$this->SetPreference('title_regex', trim($params['title_regex']));
-		}
-	if (isset($params['title_regex_repl']))
-		{
-		$this->SetPreference('title_regex_repl', trim($params['title_regex_repl']));
+		$this->SetPreference('asset_path', trim($params['asset_path']));
 		}
 	
+	$this->SetPreference('fix_links',(isset($params['fix_links'])?$params['fix_links']:'0'));
+	$this->SetPreference('fetch_assets',(isset($params['fetch_assets'])?$params['fetch_assets']:'0'));
 	$this->SetPreference('remove_markup',(isset($params['remove_markup'])?$params['remove_markup']:'0'));
 	$this->SetPreference('remove_scripts',(isset($params['remove_scripts'])?$params['remove_scripts']:'0'));
 	$this->SetPreference('fix_smarty',(isset($params['fix_smarty'])?$params['fix_smarty']:'0'));
@@ -31,21 +29,22 @@ if (isset($params['submit']))
 	$smarty->assign('message',$this->Lang('updated_settings'));
 	}
 
-
 if (FALSE == empty($params['active_tab']))
   {
     $tab = $params['active_tab'];
   } else {
-  $tab = '';
+  $tab = 'bulk';
  }
 
 $smarty->assign('tabheaders', $this->StartTabHeaders() .
 	$this->SetTabHeader('bulk',$this->Lang('bulk'),('bulk' == $tab)?true:false) .
+	$this->SetTabHeader('migrate',$this->Lang('migrate'),('migrate' == $tab)?true:false) .
 	$this->SetTabHeader('settings',$this->Lang('settings'),('settings' == $tab)?true:false) .
 	$this->EndTabHeaders().
 	$this->StartTabContent());
 $smarty->assign('start_bulk',$this->StartTab('bulk'));
 $smarty->assign('start_settings',$this->StartTab('settings'));
+$smarty->assign('start_migrate',$this->StartTab('migrate'));
 $smarty->assign('end_tab',$this->EndTab());
 $smarty->assign('end_tabs',$this->EndTabContent());
 
@@ -58,19 +57,24 @@ $smarty->assign('start_settings_form', $this->CreateFormStart($id, 'defaultadmin
 $smarty->assign('title_insert_lorem',$this->Lang('title_insert_lorem'));
 $smarty->assign('title_template_to_use',$this->Lang('title_template_to_use'));
 $smarty->assign('title_file',$this->Lang('title_file'));
+$smarty->assign('title_field',$this->Lang('title_field'));
 $smarty->assign('title_start_delimiter',$this->Lang('title_start_delimiter'));
 $smarty->assign('title_end_delimiter',$this->Lang('title_end_delimiter'));
 $smarty->assign('title_remove_markup',$this->Lang('title_remove_markup'));
 $smarty->assign('title_allowed_tags',$this->Lang('title_allowed_tags'));
 $smarty->assign('title_remove_scripts',$this->Lang('title_remove_scripts'));
 $smarty->assign('title_fix_smarty',$this->Lang('title_fix_smarty'));
-$smarty->assign('title_title_regex',$this->Lang('title_title_regex'));
-$smarty->assign('title_title_regex_repl',$this->Lang('title_title_regex_repl'));
-$smarty->assign('title_regex_help',$this->Lang('title_regex_help'));
-$smarty->assign('title_menutext_munge',$this->Lang('title_menutext_munge'));
 $smarty->assign('title_migration_help',$this->Lang('title_migration_help'));
 $smarty->assign('title_delete_content',$this->Lang('title_delete_content'));
 $smarty->assign('title_delete_sure',$this->Lang('title_delete_sure'));
+$smarty->assign('title_source_chooser',$this->Lang('title_source_chooser'));
+$smarty->assign('title_structure_source',$this->Lang('title_structure_source'));
+$smarty->assign('title_source_chooser',$this->Lang('title_source_chooser'));
+$smarty->assign('title_cleanup',$this->Lang('title_cleanup'));
+$smarty->assign('title_delimiters',$this->Lang('title_delimiters'));
+$smarty->assign('title_fix_internal_links',$this->Lang('title_fix_internal_links'));
+$smarty->assign('title_fetch_assets',$this->Lang('title_fetch_assets'));
+$smarty->assign('title_asset_location',$this->Lang('title_asset_location'));
 
 $templateops =& $gCms->GetTemplateOperations();
 
@@ -82,6 +86,13 @@ $smarty->assign('input_start_delimiter',
 	$this->CreateInputText($id, 'start_delimiter', $this->GetPreference('start_delimiter','/<body[^>]*>/i'),25));
 $smarty->assign('input_end_delimiter',
 	$this->CreateInputText($id, 'end_delimiter', $this->GetPreference('end_delimiter','/<\/body>/i'),25));
+$smarty->assign('input_fix_internal_links',
+	$this->CreateInputCheckbox($id, 'fix_links', 1, $this->GetPreference('fix_links','1')).
+	$this->Lang('title_fix_internal_links'));
+$smarty->assign('input_fetch_assets',
+	$this->CreateInputCheckbox($id, 'fetch_assets', 1, $this->GetPreference('fetch_assets','0')).
+	$this->Lang('title_fetch_assets_help'));
+$smarty->assign('input_asset_location',$this->CreateInputText($id, 'asset_path', $this->GetPreference('asset_path',$gCms->config['uploads_path'].DIRECTORY_SEPARATOR.$this->Lang('migrate_dir')), 40));
 $smarty->assign('input_remove_markup',
 	$this->CreateInputCheckbox($id, 'remove_markup', 1, $this->GetPreference('remove_markup','0')).
 	$this->Lang('title_remove_markup'));
@@ -90,18 +101,22 @@ $smarty->assign('input_remove_scripts',
 	$this->Lang('title_remove_scripts'));
 $smarty->assign('input_fix_smarty',
 	$this->CreateInputCheckbox($id, 'fix_smarty', 1, $this->GetPreference('fix_smarty','1')).
-	$this->Lang('title_fix_smarty'));
+	$this->Lang('title_fix_smarty_help'));
 $smarty->assign('input_allowed_tags',
 	$this->CreateInputText($id, 'allowed_tags',
-	$this->GetPreference('allowed_tags','<p><a><i><b><strong><em><ul><li><ol><sup><sub>'),40));
-$smarty->assign('input_title_regex',
-	$this->CreateInputText($id, 'title_regex', $this->GetPreference('title_regex',''),25));
-$smarty->assign('input_title_regex_repl',
-	$this->CreateInputText($id, 'title_regex_repl', $this->GetPreference('title_regex_repl',''),25));
+	$this->GetPreference('allowed_tags','<p><a><img><i><b><strong><em><ul><li><ol><sup><sub>'),40));
 $smarty->assign('input_delete_content',
 	$this->CreateInputCheckbox($id, 'delete_content', '1', '0', "id=\"del_cont_check\" onclick='vcheck()'").
 	$this->Lang('title_delete_content'));
+$smarty->assign('input_source_chooser','<input type="radio" name="structsource" value="file" id="filecheck" checked="checked" onclick="showstructsource(\'file\')"/><label for="filecheck">'.$this->Lang('file').'</label><input type="radio" name="structsource" value="field" id="fieldcheck" onclick="showstructsource(\'field\')"/><label for="fieldcheck">'.$this->Lang('form').'</label>');
+$smarty->assign('input_field',$this->CreateTextArea(false, $id, '', 'structure','','sample_structure'));
+$smarty->assign('load_link','<a href="javascript:getSample()">'.$this->Lang('load_sample').'</a>');
 
+$modLink = $this->CreateLink($id, 'get_sample', $returnid, '', array(), '', true);
+list($mod_path, $mod_param) = explode('?',$modLink);
+$smarty->assign('security_key',CMS_SECURE_PARAM_NAME.'='.$_SESSION[CMS_USER_KEY]);
+$smarty->assign('mod_path',$mod_path);
+$smarty->assign('mod_param',html_entity_decode($mod_param));
 
 
 $smarty->assign('submit', $this->CreateInputSubmit($id, 'submit', lang('submit')));

@@ -1,3 +1,67 @@
+{literal}
+<script type="text/javascript">
+/* <![CDATA[ */
+	function getSample()
+		{		
+		var selector = document.getElementById('sample_structure');
+		if (selector)
+			{
+			var url = '{/literal}{$mod_path}{literal}';
+			var pars = '{/literal}{$mod_param}{literal}';
+		
+			var myAjax = new Ajax.Request(
+				url, 
+				{
+					method: 'get', 
+					parameters: pars,
+					onFailure: reportError,
+					onComplete: replaceSample
+				});		
+			}
+		}
+	function reportError(request)
+		{
+			alert('Sorry. There was an error.');
+		}
+
+	function replaceSample(originalRequest)
+		{
+			//put returned sample in the textarea
+			$('sample_structure').value = originalRequest.responseText;
+		}
+
+	function vcheck()
+		{
+		var cb = document.getElementById('del_cont_check');
+		if (cb && cb.checked)
+			{
+			if (!confirm('{/literal}{$title_delete_sure}{literal}'))
+				{
+				cb.checked = false;
+				}
+			}
+		}
+	function showstructsource(source)
+		{
+		var fil = document.getElementById('blfile');
+		var fld = document.getElementById('blfield');
+		if (fil && fld)
+			{
+			if (source == 'field')
+				{
+				fil.style.display='none';
+				fld.style.display='block';
+				}
+			else
+				{
+				fil.style.display='block';
+				fld.style.display='none';
+				}
+			}
+		}
+/* ]]> */	
+</script>
+{/literal}
 {if isset($message)}<h3>{$message}</h3>{/if}
 {$tabheaders}
 {$start_bulk}
@@ -10,26 +74,21 @@
 	<p class="pagetext">{$title_template_to_use}:</p>
 	<p class="pageinput">{$input_template_to_use}</p>
 </div>
+<fieldset><legend>{$title_structure_source}</legend>
 <div class="pageoverflow">
+	<p class="pagetext">{$title_source_chooser}:</p>
+	<p class="pageinput">{$input_source_chooser}</p>
+</div>
+<div class="pageoverflow" id="blfile">
 	<p class="pagetext">{$title_file}:</p>
 	<p class="pageinput">{$input_file}</p>
 </div>
+<div class="pageoverflow" id="blfield" style="display:none">
+	<p class="pagetext">{$title_field}:</p>
+	<p class="pageinput">{$input_field}<br />{$load_link}</p>
+</div>
+</fieldset>
 <div class="pageoverflow">
-	{literal}
-	<script type="text/javascript">
-		function vcheck()
-			{
-			var cb = document.getElementById('del_cont_check');
-			if (cb && cb.checked)
-				{
-				if (!confirm('{/literal}{$title_delete_sure}{literal}'))
-					{
-					cb.checked = false;
-					}
-				}
-			}
-	</script>
-	{/literal}
 	<p class="pagetext">{$title_delete_content}:</p>
 	<p class="pageinput">{$input_delete_content}</p>
 </div>
@@ -39,52 +98,58 @@
 </div>
 {$end_form}
 {$end_tab}
-{$start_settings}
 {$start_settings_form}
-<fieldset>
+{$start_migrate}
+<div class="pageoverflow">
+	<p class="pagetext">{$title_fix_internal_links}:</p>
+	<p class="pageinput">{$input_fix_internal_links}</p>
+</div>
+<div class="pageoverflow">
+	<p class="pagetext">{$title_fetch_assets}:</p>
+	<p class="pageinput">{$input_fetch_assets}</p>
+</div>
+<div class="pageoverflow">
+	<p class="pagetext">{$title_asset_location}:</p>
+	<p class="pageinput">{$input_asset_location}</p>
+</div>
+
+{$end_tab}
+{$start_settings}
 <div class="pageoverflow">
 	<p>{$title_migration_help}</p>
 </div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_start_delimiter}:</p>
-	<p class="pageinput">{$input_start_delimiter}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_end_delimiter}:</p>
-	<p class="pageinput">{$input_end_delimiter}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_remove_markup}:</p>
-	<p class="pageinput">{$input_remove_markup}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_allowed_tags}:</p>
-	<p class="pageinput">{$input_allowed_tags}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_remove_scripts}:</p>
-	<p class="pageinput">{$input_remove_scripts}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_fix_smarty}:</p>
-	<p class="pageinput">{$input_fix_smarty}</p>
-</div>
+<fieldset><legend>{$title_delimiters}</legend>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_start_delimiter}:</p>
+		<p class="pageinput">{$input_start_delimiter}</p>
+	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_end_delimiter}:</p>
+		<p class="pageinput">{$input_end_delimiter}</p>
+	</div>
 </fieldset>
-<fieldset><legend>{$title_menutext_munge}</legend>
-<p>{$title_regex_help}</p>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_title_regex}:</p>
-	<p class="pageinput">{$input_title_regex}</p>
-</div>
-<div class="pageoverflow">
-	<p class="pagetext">{$title_title_regex_repl}:</p>
-	<p class="pageinput">{$input_title_regex_repl}</p>
-</div>
+<fieldset><legend>{$title_cleanup}</legend>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_remove_markup}:</p>
+		<p class="pageinput">{$input_remove_markup}</p>
+	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_allowed_tags}:</p>
+		<p class="pageinput">{$input_allowed_tags}</p>
+	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_remove_scripts}:</p>
+		<p class="pageinput">{$input_remove_scripts}</p>
+	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_fix_smarty}:</p>
+		<p class="pageinput">{$input_fix_smarty}</p>
+	</div>
+	</fieldset>
+	<div class="pageoverflow">
+		<p class="pagetext">&nbsp;</p>
+		<p class="pageinput">{$submit}</p>
+	</div>
 </fieldset>
-<div class="pageoverflow">
-	<p class="pagetext">&nbsp;</p>
-	<p class="pageinput">{$submit}</p>
-</div>
 {$end_form}
-{$end_tab}
 {$end_tabs}

@@ -1,8 +1,12 @@
+# Bulk Import format
+# Page Title [Menu Text] {Page Alias} | migrate_url1, migrate_url2
+# Everything but Page Title is optional
+# all fields are trimmed of leading and trailing whitespace
 Mercury
-Venus|http://cc.oulu.fi/~yseppa/pages/page1_1.html
-Earth|http://www.nineplanets.org/earth.html
+Venus {planet-of-love} | http://cc.oulu.fi/~yseppa/pages/page1_1.html
+Earth [The Blue Planet] | http://www.nineplanets.org/earth.html,http://www.fogbound.net
 -Luna
-Mars|http://en.wikipedia.org/wiki/A_Princess_of_Mars
+Mars [The Red Planet] {mars} | http://en.wikipedia.org/wiki/A_Princess_of_Mars
 -Phobos
 -Deimos
 Jupiter
