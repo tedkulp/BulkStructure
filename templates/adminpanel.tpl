@@ -100,10 +100,12 @@
 {$end_tab}
 {$start_settings_form}
 {$start_migrate}
+{* ... not yet implemented, and may well not be ...
 <div class="pageoverflow">
 	<p class="pagetext">{$title_fix_internal_links}:</p>
 	<p class="pageinput">{$input_fix_internal_links}</p>
 </div>
+*}
 <div class="pageoverflow">
 	<p class="pagetext">{$title_fetch_assets}:</p>
 	<p class="pageinput">{$input_fetch_assets}</p>

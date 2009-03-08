@@ -143,7 +143,7 @@ else
                }
 			$p_count += 1;
             }
-         if ($thisdepth > 0)
+         if ($thisdepth > 0 && isset($parents[$thisdepth-1]))
             {
             $contentobj->SetParentId($parents[$thisdepth-1]);
             }
