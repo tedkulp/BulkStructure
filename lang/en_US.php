@@ -24,6 +24,7 @@ $lang['title_cleanup'] = 'Migrated content cleanup options';
 $lang['title_fix_internal_links'] = 'Fix internal content links';
 $lang['title_fetch_assets'] = 'Fetch assets for migrated pages';
 $lang['title_asset_location'] = 'Fetched asset location';
+$lang['title_asset_url'] = 'Fetched asset URL';
 $lang['title_asset_regex'] = 'Regular expression to use for testing assets linked by HREF';
 $lang['title_fetch_assets_help'] = 'Retrieve images, etc, referenced by migrated page';
 $lang['title_delimiters'] = 'Content Boundries';
@@ -45,7 +46,8 @@ $lang['updated_settings'] = 'Updated Migration settings.';
 $lang['nag'] = 'Annoying Nagging from the Author';
 $lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site; you also transfered %s site graphics/assets (%s bytes).</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least US$%s!</strong></p>';
 $lang['changelog'] = '<ul>
-<li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying programmer.</li>
+<li>Version 0.3, Mar 2009 SjG, Added asset fetching and link reconciliation. This is actually becoming useful at this point.</li>
+<li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying person.</li>
 <li>Version 0.1, Feb 2009 SjG, Initial Version</li>
 </ul>';
 $lang['lorem'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla pellentesque, lectus ac posuere ultrices, mauris nibh feugiat nunc, ac lobortis augue pede ac odio. Morbi consequat nulla et lacus. Donec pellentesque dapibus nisl. Nulla et arcu ut ipsum faucibus sagittis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Duis sit amet libero. Proin dapibus. Donec facilisis est sed magna. Vestibulum lorem lectus, venenatis ac, tempus quis, sollicitudin in, arcu. Donec sagittis neque. Quisque viverra. Sed volutpat. Quisque vitae justo et urna lacinia consequat. Mauris blandit, mauris vitae tempus adipiscing, libero mi ornare enim, eu mollis nisl nisl a nisi. Praesent condimentum, pede sed tempor hendrerit, enim lacus posuere ligula, a hendrerit est elit quis mauris. Ut pellentesque. Nullam faucibus, ipsum in accumsan euismod, ligula mi ullamcorper ante, non fermentum augue pede vitae nisi.</p>

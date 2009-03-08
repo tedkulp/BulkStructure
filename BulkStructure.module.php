@@ -207,12 +207,13 @@ function fetch_assets(&$asset_list)
 	return array($count,$len);
 }
 
-function identify_assets($url,$content,$alias,&$assetlist)
+function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 {
-	// gather all linked URLs
+	global $gCms;
 	$srced_links = array();
 	$base = parse_url($url);
-    $asset_regex = '/'.$this->GetPreference('asset_regex','jpg|jpeg|gif|png|pdf|doc|rtf|fla|xls').'/i';
+	$destbase = $this->GetPreference('asset_url',$gCms->config['uploads_url'].'/'.$this->Lang('migrate_dir'));
+    $asset_regex = '/'.$this->GetPreference('asset_regex','jpg|jpeg|gif|png|pdf|doc|rtf|swf|xls').'/i';
 	if (preg_match_all('/src\s*=\s*\"*([^\"\s]+)[\"\s]/i', $content, $srced_links))
 		{
 		foreach($srced_links[1] as $link)
@@ -226,6 +227,11 @@ function identify_assets($url,$content,$alias,&$assetlist)
 			else if (!isset($assetlist[$abs_url]))
 				{
 				$assetlist[$abs_url] = $alias;	
+				}
+			// mapped location
+			if (strrpos($abs_url,'/') !== false)
+				{
+				$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
 				}
 			}
 		}
@@ -249,11 +255,37 @@ function identify_assets($url,$content,$alias,&$assetlist)
 						{
 						$assetlist[$abs_url] = $alias;	
 						}
+					// mapped location
+					if (strrpos($abs_url,'/') !== false)
+						{
+						$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
+						}
 					}
 				}
 			}
 		}
 
+}
+
+function reconcile_asset_links(&$asset_map, $aliases)
+{
+	global $gCms;
+	$contentops =& $gCms->GetContentOperations();
+   
+	foreach($aliases as $thisAlias)
+		{
+		$page = $contentops->LoadContentFromAlias($thisAlias);
+		if ($page)
+			{
+			$cont = $page->GetPropertyValue('content_en');
+			foreach($asset_map as $target=>$replacement)
+				{
+				$cont = str_replace($target,$replacement,$cont);
+				}
+			$page->SetPropertyValue('content_en',$cont);
+			$page->Save();
+			}
+		}
 }
 
 function reconcile_url($base_host,$full_url,$link)

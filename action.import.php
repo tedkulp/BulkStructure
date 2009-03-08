@@ -48,6 +48,8 @@ else
    $m_count = 0;
    $listing = array_filter($listing, array($this,'remove_comments'));
    $assets = array();
+   $asset_recon = array();
+   $alias_list = array();
 
    foreach ($listing as $thisPage)
       {
@@ -116,12 +118,12 @@ else
 			foreach ($flist as $thisFetch)
 				{
             	$fetched = $this->fetch_url(trim($thisFetch));
-
+				array_push($alias_list,$alias);
 	            if ($fetched !== false)
 	               {
 				   $cont = '';
 	               $cont = $this->process_page($fetched);
-				   $this->identify_assets($thisFetch,$cont,$alias,$assets);
+				   $this->identify_assets($thisFetch,$cont,$alias,$assets,$asset_recon);
 				   $content .= $cont;
                    $m_count += 1;
 	               }
@@ -163,7 +165,11 @@ else
          echo $this->Lang('created',$name)."<br />\n";
          }
       }
-   list($a_count,$a_len) = $this->fetch_assets($assets);
+   if ($this->GetPreference('fetch_assets','0') == '1')
+		{
+   		list($a_count,$a_len) = $this->fetch_assets($assets);
+		$this->reconcile_asset_links($asset_recon,$alias_list);
+		}
    echo "<br /><br /><strong>".$this->Lang('nag')."</strong><br />\n";
    $time_estimate = $p_count + $m_count * 5;
    $dollars = $time_estimate / 60 * 35;

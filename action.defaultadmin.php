@@ -19,6 +19,10 @@ if (isset($params['submit']))
 		{
 		$this->SetPreference('asset_path', trim($params['asset_path']));
 		}
+	if (isset($params['asset_url']))
+		{
+		$this->SetPreference('asset_url', trim($params['asset_url']));
+		}
 	if (isset($params['asset_regex']))
 		{
 		$this->SetPreference('asset_regex', trim($params['asset_regex']));
@@ -79,6 +83,7 @@ $smarty->assign('title_delimiters',$this->Lang('title_delimiters'));
 $smarty->assign('title_fix_internal_links',$this->Lang('title_fix_internal_links'));
 $smarty->assign('title_fetch_assets',$this->Lang('title_fetch_assets'));
 $smarty->assign('title_asset_location',$this->Lang('title_asset_location'));
+$smarty->assign('title_asset_url',$this->Lang('title_asset_url'));
 $smarty->assign('title_asset_regex',$this->Lang('title_asset_regex'));
 
 $templateops =& $gCms->GetTemplateOperations();
@@ -99,8 +104,10 @@ $smarty->assign('input_fetch_assets',
 	$this->Lang('title_fetch_assets_help'));
 $smarty->assign('input_asset_location',$this->CreateInputText($id, 'asset_path',
 	$this->GetPreference('asset_path',$gCms->config['uploads_path'].DIRECTORY_SEPARATOR.$this->Lang('migrate_dir')), 40));
+$smarty->assign('input_asset_url',$this->CreateInputText($id, 'asset_url',
+	$this->GetPreference('asset_url',$gCms->config['uploads_url'].'/'.$this->Lang('migrate_dir')), 40));
 $smarty->assign('input_asset_regex',$this->CreateInputText($id, 'asset_regex',
-	$this->GetPreference('asset_regex','jpg|jpeg|gif|png|pdf|doc|rtf|fla|xls'),40));
+	$this->GetPreference('asset_regex','jpg|jpeg|gif|png|pdf|doc|rtf|swf|xls'),40));
 $smarty->assign('input_remove_markup',
 	$this->CreateInputCheckbox($id, 'remove_markup', 1, $this->GetPreference('remove_markup','0')).
 	$this->Lang('title_remove_markup'));

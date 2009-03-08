@@ -113,8 +113,16 @@
 	<p class="pageinput">{$input_asset_location}</p>
 </div>
 <div class="pageoverflow">
+	<p class="pagetext">{$title_asset_url}:</p>
+	<p class="pageinput">{$input_asset_url}</p>
+</div>
+<div class="pageoverflow">
 	<p class="pagetext">{$title_asset_regex}:</p>
 	<p class="pageinput">{$input_asset_regex}</p>
+</div>
+<div class="pageoverflow">
+	<p class="pagetext">&nbsp;</p>
+	<p class="pageinput">{$submit}</p>
 </div>
 {$end_tab}
 {$start_settings}
