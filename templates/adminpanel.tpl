@@ -112,7 +112,10 @@
 	<p class="pagetext">{$title_asset_location}:</p>
 	<p class="pageinput">{$input_asset_location}</p>
 </div>
-
+<div class="pageoverflow">
+	<p class="pagetext">{$title_asset_regex}:</p>
+	<p class="pageinput">{$input_asset_regex}</p>
+</div>
 {$end_tab}
 {$start_settings}
 <div class="pageoverflow">

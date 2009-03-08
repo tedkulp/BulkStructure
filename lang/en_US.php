@@ -24,6 +24,7 @@ $lang['title_cleanup'] = 'Migrated content cleanup options';
 $lang['title_fix_internal_links'] = 'Fix internal content links';
 $lang['title_fetch_assets'] = 'Fetch assets for migrated pages';
 $lang['title_asset_location'] = 'Fetched asset location';
+$lang['title_asset_regex'] = 'Regular expression to use for testing assets linked by HREF';
 $lang['title_fetch_assets_help'] = 'Retrieve images, etc, referenced by migrated page';
 $lang['title_delimiters'] = 'Content Boundries';
 $lang['created'] = 'Created page %s.';
@@ -36,12 +37,13 @@ $lang['submit_go'] = 'Go!';
 $lang['file'] = 'Upload File';
 $lang['form'] = 'Enter into Form';
 $lang['load_sample'] = 'Load an example structure';
+$lang['fail_dir'] = 'Failed to create directory %s. Try checking permissions?';
 $lang['title_migration_help'] = 'If you are using this tool to migrate an external site to CMSMS, you can use these settings to fine-tune the process. You will still doubtless need to do some clean-up by hand, but this should save you a lot of effort.';
 $lang['upload_error'] = 'Upload error: %s';
 $lang['moddescription'] = 'This module allows the bulk import of site structure.';
 $lang['updated_settings'] = 'Updated Migration settings.';
 $lang['nag'] = 'Annoying Nagging from the Author';
-$lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site.</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least $%s!</strong></p>';
+$lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site; you also transfered %s site graphics/assets (%s bytes).</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least US$%s!</strong></p>';
 $lang['changelog'] = '<ul>
 <li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying programmer.</li>
 <li>Version 0.1, Feb 2009 SjG, Initial Version</li>

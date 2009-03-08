@@ -1,6 +1,8 @@
 <?php
 if (!isset($gCms)) exit;
 
+set_time_limit(0);
+
 if (empty($params['structure']) && !empty($_FILES[$id.'ulfile']['error']))
    {
    echo $this->Lang('upload_error',$_FILES[$id.'ulfile']['error']);
@@ -41,8 +43,11 @@ else
    $prevdepth = 0;
    $parents = array();
    $p_count = 0;
+   $a_count = 0;
+   $a_len = 0;
    $m_count = 0;
    $listing = array_filter($listing, array($this,'remove_comments'));
+   $assets = array();
 
    foreach ($listing as $thisPage)
       {
@@ -114,7 +119,10 @@ else
 
 	            if ($fetched !== false)
 	               {
-	               $content .= $this->process_page($fetched);
+				   $cont = '';
+	               $cont = $this->process_page($fetched);
+				   $this->identify_assets($thisFetch,$cont,$alias,$assets);
+				   $content .= $cont;
                    $m_count += 1;
 	               }
 				}
@@ -155,11 +163,12 @@ else
          echo $this->Lang('created',$name)."<br />\n";
          }
       }
+   list($a_count,$a_len) = $this->fetch_assets($assets);
    echo "<br /><br /><strong>".$this->Lang('nag')."</strong><br />\n";
    $time_estimate = $p_count + $m_count * 5;
    $dollars = $time_estimate / 60 * 35;
    $dollars = sprintf('%0.2f',$dollars);
-   echo $this->Lang('pages_done',array(($p_count+$m_count),$p_count,$m_count,$time_estimate,$dollars));
+   echo $this->Lang('pages_done',array(($p_count+$m_count),$p_count,$m_count,$a_count,$a_len,$time_estimate,$dollars));
    echo '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">

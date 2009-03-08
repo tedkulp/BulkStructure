@@ -157,6 +157,132 @@ function fetch_url($url)
       }
 }
 
+function fetch_assets(&$asset_list)
+{
+	global $gCms;
+	$count = 0;
+	$len = 0;
+	$asset_dir = $this->GetPreference('asset_path',$gCms->config['uploads_path'].DIRECTORY_SEPARATOR.$this->Lang('migrate_dir'));
+	if (!file_exists($asset_dir))
+		{
+		if (!mkdir($asset_dir))
+			{
+			echo $this->Lang('fail_dir',$asset_dir);
+			return false;
+			}
+		}
+	foreach ($asset_list as $url=>$alias)
+		{
+		$target_dir = $asset_dir.DIRECTORY_SEPARATOR.$alias;
+		if (!file_exists($target_dir))
+			{
+			if (!mkdir($target_dir))
+				{
+				echo $this->Lang('fail_dir',$target_dir);
+				return false;
+				}
+			}
+		$fname = substr($url,strrpos($url,'/')+1);
+		if (function_exists('curl_init'))
+			{
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			$tf = curl_exec($ch);
+			if (curl_errno($ch))
+				{
+				return false;
+				}
+			curl_close($ch);
+			}
+		else
+			{
+			$tf = file_get_contents($url);
+			}
+		$handle = fopen($target_dir.DIRECTORY_SEPARATOR.$fname, "wb");
+		fwrite($handle,$tf);
+		fclose($handle);
+		$len += mb_strlen($tf, '8bit');
+		$count += 1;
+		}	
+	return array($count,$len);
+}
+
+function identify_assets($url,$content,$alias,&$assetlist)
+{
+	// gather all linked URLs
+	$srced_links = array();
+	$base = parse_url($url);
+    $asset_regex = '/'.$this->GetPreference('asset_regex','jpg|jpeg|gif|png|pdf|doc|rtf|fla|xls').'/i';
+	if (preg_match_all('/src\s*=\s*\"*([^\"\s]+)[\"\s]/i', $content, $srced_links))
+		{
+		foreach($srced_links[1] as $link)
+			{
+			$abs_url = $this->reconcile_url($base['host'],$url,$link);
+				
+			if (isset($assetlist[$abs_url]) && $assetlist[$abs_url] != $alias)
+				{
+				$assetlist[$abs_url] = 'common';
+				}
+			else if (!isset($assetlist[$abs_url]))
+				{
+				$assetlist[$abs_url] = $alias;	
+				}
+			}
+		}
+	if (preg_match_all('/href\s*=\s*\"*([^\"\s]+)[\"\s]/i', $content, $srced_links))
+		{
+		foreach($srced_links[1] as $link)
+			{
+			$v = strpos($link,'.');
+			if ($v !== false)
+				{
+				$ext = substr($link,strrpos($link,'.')+1);
+				if (preg_match($asset_regex,$ext))
+					{
+					$abs_url = $this->reconcile_url($base['host'],$url,$link);
+
+					if (isset($assetlist[$abs_url]) && $assetlist[$abs_url] != $alias)
+						{
+						$assetlist[$abs_url] = 'common';
+						}
+					else if (!isset($assetlist[$abs_url]))
+						{
+						$assetlist[$abs_url] = $alias;	
+						}
+					}
+				}
+			}
+		}
+
+}
+
+function reconcile_url($base_host,$full_url,$link)
+{
+	$abs_url = '';
+	if (substr($link,0,5) == 'http:')
+		{
+		// fully qualified URL
+		$linkpieces = parse_url($link);
+		if ($linkpieces['host'] == $base_host)
+			{
+			// local, so keep it
+			$abs_url = $link;
+			}
+		}
+	else if (substr($link,0,1) == '/')
+		{
+		// absolute URL, make canonical
+		$abs_url = 'http://'.$base_host.$link;
+		}
+	else
+		{
+		// relative URL
+		$rel = substr($url,0,strrpos($full_url,'/')).$link;
+		$abs_url = 'http://'.$base_host.$rel;
+		}
+	return $abs_url;
+}
+
 function remove_comments($inp)
 {
 	$s = substr($inp,0,1);
