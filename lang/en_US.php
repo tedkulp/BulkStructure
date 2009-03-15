@@ -56,14 +56,20 @@ $lang['lorem'] = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
 |<p>Maecenas dui risus, aliquam dapibus, commodo sed, viverra eu, pede. Aenean lacus nisl, porttitor eget, ornare ac, varius facilisis, lorem. Suspendisse eu erat ut odio condimentum hendrerit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In in ipsum id pede viverra posuere. Integer eget neque bibendum elit volutpat ultricies. Cras commodo auctor elit. Pellentesque a neque ac metus varius rhoncus. Ut condimentum vestibulum nulla. Donec nulla. Ut aliquet quam sodales enim. Nunc tempus elit. Nulla sed pede quis sem faucibus aliquet. Pellentesque vehicula. Curabitur mollis.</p>
 |<p>Sed ante. Pellentesque id mauris. Vestibulum semper mattis arcu. Fusce tempus nisl quis justo. Nunc vel risus quis neque ultrices sollicitudin. Sed eu est ut nunc scelerisque accumsan. Praesent id mauris. Sed tempus est nec ipsum. Nunc viverra magna non risus. Mauris felis libero, porttitor eu, viverra sed, sodales eu, metus. Aliquam eu ipsum. Sed sagittis. Sed cursus venenatis libero. Praesent eros magna, laoreet quis, dignissim sed, pretium sit amet, mi. Cras quam. Morbi eget risus. Nunc laoreet.</p>';
 $lang['help'] = '<h3>What Does This Do?</h3>
-<p></p>
+<p>This is a tool for rapidly roughing out a site structure by populating pages. It is useful for rapid-prototyping sites with customers.</p>
+<p>The module also has some pretty cool capabilities for migrating existing sites into CMSMS -- any web-accessible site content can be retrieved and placed into pages. It optionally can automatically retrieve assets such as images, documents, or other files from migrated sites, and correct the links so they work on your CMS site. If you have ever had to migrate a 500-page, content-rich site, you will appreciate this tool!</p>
 <h3>How Do I Use It</h3>
 <h4>Layout File</h4>
-<p>Create a sample layout file. The syntax is very simple: one page title per line. A hyphen
-means make the page a child page of the page above it. You can try to fetch a page from the internet to
-populate your new page by adding a | followed by an URL.</p>
+<p>Create a sample layout file. The syntax is very simple:</p>
 <pre>
-Top|http://www.yoursite.com/index.html
+Page Title [Menu Text] {Page Alias} | http://www.sample.com/test.html, http://www.sample.com/test2.html
+</pre>
+<p>Specifically: List one site page per line. Leading hyphens
+are used to represent site hierarchy. You can specify Menu Text by putting it in square brackets. You can specify Page Alias by putting it in curly braces. You can try to fetch one or
+more pages from the internet to populate your new page by adding a | followed by an URL or comma-separated
+URLs.</p>
+<pre>
+The Top Page [Top]|http://www.yoursite.com/index.html
 -Subpage
 --Subsubpage
 -Subpage 2
@@ -80,16 +86,21 @@ Second Top Level
 http://www.yoursite.com/index.html.</p>
 <p>For a better example, look at planets.txt in the modules "example" directory.</p>
 <h4>Usage</h4>
-<p>In the admin, select a layout file, which template to use for the generated pages, and a number of
+<p>In the admin, select a layout file or enter your format directly into the text area. Choose which template to use for the generated pages, and a number of
 paragraphs of <em>lorem ipsum</em> to insert into a page. Then submit.</p>
+<p>If you want to replace all of your site content with the new structure, click the checkbox. THIS WILL DELETE YOUR CONTENT! Do not check the box unless that is what you want.</p>
 <p><em>Lorem Ispum</em> and/or URL-fetched content only go to the main content area on a page. If
 you have specified <em>lorem ipsum</em> and URL fetch content, you will only get your URL-fetch
 content. If you have not specified either, you will get the page name as the page content.</p>
 <p>Most of the other page attributes (caching, searchability) go by your site defaults.
 Page aliases are automatically generated.</p>
+<h4>Migration Options</h4>
+<p>If you are migrating pages, you can opt to also copy over assets referenced in those pages. Typically, they will be put in a "migration" directory under your site upload directory, but you can change that. Assets will be put into a subdirectory named for the page where they were found -- if an asset is found in more than one page, it will be put into a subdirectory called "common". You can also filter which kinds of assets are migrated by updating the regular expression.</p>
+<p>Advanced migration options include choosing what tags delimit the content you want fetched (theoretically, this should be selectable on a per-page basis, but I did not realize this until too late). You can use whatever regular expression you can come up with. You can also selectively remove markup from migrated pages (this uses the PHP strip_tags function, which is actually kind of hit-or-miss, but better than nothing). You can also choose to remove embedded javascripts. By default, the migrator will replace curly braces with smarty-friendly tags, but you can disable this behavior too.</p>
 <h3>Extra Disclaimer</h3>
-<p>This adds content dircetly to your site. It tries to do it at the root content level.
-Back up your database before using this. Do not say you were not warned.</p>
+<p>If you click the checkbox, this WILL DELETE YOUR SITE CONTENT before creating the new structure. 
+<p>Even if you do not delete your content, this module adds content directly to your site.
+It tries to do it at the root content level. It could cause trouble. Back up your database before using this. Do not say you were not warned.</p>
 <p>This is not a sophisticated site population tool. This is more for rapidly prototyping
 site content. For a site population tool, take a look at Alex Gomoloff\'s
 <a href="http://dev.cmsmadesimple.org/projects/import-content">Import Content</a> module.</p>
