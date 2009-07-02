@@ -13,8 +13,12 @@ $lang['title_structure_source'] = 'Structure Source';
 $lang['title_source_chooser'] = 'Structure Data Source';
 $lang['title_delete_content'] = 'Delete existing site content before import?';
 $lang['title_delete_sure'] = 'THIS WILL DELETE ALL PAGES IN YOUR SITE! ARE YOU SURE YOU WANT TO DO THIS?';
-$lang['title_start_delimiter'] = 'Starting delimiter in migrated pages (regex allowed)';
-$lang['title_end_delimiter'] = 'Ending delimiter in migrated pages (regex allowed)';
+$lang['title_delimiters_help'] = 'Delimiters are used to extract only the relevant piece of the migrated pages. They may be static tags, or regexes. Regexes are detected by starting and ending with "/". If the preferred delimiter is not found, the second will be tried. If that fails, the third will be tried.';
+$lang['title_start_delimiter'] = 'Starting Delimiter';
+$lang['title_end_delimiter'] = 'End delimiter';
+$lang['title_best'] = 'Preferred';
+$lang['title_second'] = '2nd Best';
+$lang['title_third'] = '3rd Best';
 $lang['title_remove_markup'] = 'Remove markup from migrated pages?';
 $lang['title_allowed_tags'] = 'If removing markup, what tags should be left in migrated pages';
 $lang['title_remove_scripts'] = 'Try to remove Javascript from migrated pages?';
@@ -34,6 +38,8 @@ $lang['migrate_dir'] = 'migrated';
 $lang['migrate'] = 'Migration Settings';
 $lang['settings'] = 'Advanced Migration Settings';
 $lang['deleting'] = 'Deleting existing content...';
+$lang['no_start_delim'] = 'Cannot find any starting delimiter in page. Starting from top of page.';
+$lang['no_end_delim'] = 'Cannot find any ending delimiter in page. Using to end of page.';
 $lang['submit_go'] = 'Go!';
 $lang['file'] = 'Upload File';
 $lang['form'] = 'Enter into Form';
@@ -46,6 +52,7 @@ $lang['updated_settings'] = 'Updated Migration settings.';
 $lang['nag'] = 'Annoying Nagging from the Author';
 $lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site; you also transfered %s site graphics/assets (%s bytes).</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least US$%s!</strong></p>';
 $lang['changelog'] = '<ul>
+<li>Version 0.4, June 2009 SjG, Improved handling of start/end tagging of fetched pages.</li>
 <li>Version 0.3, Mar 2009 SjG, Added asset fetching and link reconciliation. This is actually becoming useful at this point.</li>
 <li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying person.</li>
 <li>Version 0.1, Feb 2009 SjG, Initial Version</li>

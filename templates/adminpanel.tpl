@@ -132,14 +132,22 @@
 	<p>{$title_migration_help}</p>
 </div>
 <fieldset><legend>{$title_delimiters}</legend>
-	<div class="pageoverflow">
-		<p class="pagetext">{$title_start_delimiter}:</p>
-		<p class="pageinput">{$input_start_delimiter}</p>
-	</div>
-	<div class="pageoverflow">
-		<p class="pagetext">{$title_end_delimiter}:</p>
-		<p class="pageinput">{$input_end_delimiter}</p>
-	</div>
+	<table>
+		<tr><th></th><th>{$title_best}</th><th>{$title_second}</th><th>{$title_third}</th></tr>
+		<tr>
+			<th>{$title_start_delimiter}</th>
+			<td>{$input_start_delimiter1}</td>
+			<td>{$input_start_delimiter2}</td>
+			<td>{$input_start_delimiter3}</td>
+		</tr>
+		<tr>
+			<th>{$title_end_delimiter}</th>
+			<td>{$input_end_delimiter1}</td>
+			<td>{$input_end_delimiter2}</td>
+			<td>{$input_end_delimiter3}</td>
+		</tr>
+	</table>
+	<p>{$title_delimiters_help}</p>
 </fieldset>
 <fieldset><legend>{$title_cleanup}</legend>
 	<div class="pageoverflow">

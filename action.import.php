@@ -128,6 +128,7 @@ else
                    $m_count += 1;
 	               }
 				}
+error_log(print_r($assets,true));;
 			   $contentobj->SetPropertyValue('content_en', $content);
                $populated_content = true;
             }
@@ -167,6 +168,7 @@ else
       }
    if ($this->GetPreference('fetch_assets','0') == '1')
 		{
+			debug_display($assets);
    		list($a_count,$a_len) = $this->fetch_assets($assets);
 		$this->reconcile_asset_links($asset_recon,$alias_list);
 		}

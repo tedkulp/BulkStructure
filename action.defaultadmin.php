@@ -3,14 +3,12 @@ if (!isset($gCms)) exit;
 
 if (isset($params['submit']))
 	{
-	if (isset($params['start_delimiter']))
-		{
-		$this->SetPreference('start_delimiter', trim($params['start_delimiter']));
-		}
-	if (isset($params['end_delimiter']))
-		{
-		$this->SetPreference('end_delimiter', trim($params['end_delimiter']));
-		}
+	$this->SetPreference('start_delimiter1', trim($params['start_delimiter1']));
+	$this->SetPreference('start_delimiter2', trim($params['start_delimiter2']));
+	$this->SetPreference('start_delimiter3', trim($params['start_delimiter3']));
+	$this->SetPreference('end_delimiter1', trim($params['end_delimiter1']));
+	$this->SetPreference('end_delimiter2', trim($params['end_delimiter2']));
+	$this->SetPreference('end_delimiter3', trim($params['end_delimiter3']));
 	if (isset($params['allowed_tags']))
 		{
 		$this->SetPreference('allowed_tags', trim($params['allowed_tags']));
@@ -66,6 +64,10 @@ $smarty->assign('title_insert_lorem',$this->Lang('title_insert_lorem'));
 $smarty->assign('title_template_to_use',$this->Lang('title_template_to_use'));
 $smarty->assign('title_file',$this->Lang('title_file'));
 $smarty->assign('title_field',$this->Lang('title_field'));
+$smarty->assign('title_delimiters_help',$this->Lang('title_delimiters_help'));
+$smarty->assign('title_best',$this->Lang('title_best'));
+$smarty->assign('title_second',$this->Lang('title_second'));
+$smarty->assign('title_third',$this->Lang('title_third'));
 $smarty->assign('title_start_delimiter',$this->Lang('title_start_delimiter'));
 $smarty->assign('title_end_delimiter',$this->Lang('title_end_delimiter'));
 $smarty->assign('title_remove_markup',$this->Lang('title_remove_markup'));
@@ -92,10 +94,18 @@ $smarty->assign('input_template_to_use',$templateops->TemplateDropdown());
 $items = array($this->Lang('none')=>'0','1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5');
 $smarty->assign('input_file',$this->CreateInputFile($id, 'ulfile'));
 $smarty->assign('input_insert_lorem',$this->CreateInputDropdown($id, 'insert_lorem', $items));
-$smarty->assign('input_start_delimiter',
-	$this->CreateInputText($id, 'start_delimiter', $this->GetPreference('start_delimiter','/<body[^>]*>/i'),25));
-$smarty->assign('input_end_delimiter',
-	$this->CreateInputText($id, 'end_delimiter', $this->GetPreference('end_delimiter','/<\/body>/i'),25));
+$smarty->assign('input_start_delimiter1',
+	$this->CreateInputText($id, 'start_delimiter1', $this->GetPreference('start_delimiter1','/<body[^>]*>/i'),25));
+$smarty->assign('input_start_delimiter2',
+	$this->CreateInputText($id, 'start_delimiter2', $this->GetPreference('start_delimiter2',''),25));
+$smarty->assign('input_start_delimiter3',
+	$this->CreateInputText($id, 'start_delimiter3', $this->GetPreference('start_delimiter3',''),25));
+$smarty->assign('input_end_delimiter1',
+	$this->CreateInputText($id, 'end_delimiter1', $this->GetPreference('end_delimiter1','/<\/body>/i'),25));
+$smarty->assign('input_end_delimiter2',
+	$this->CreateInputText($id, 'end_delimiter2', $this->GetPreference('end_delimiter2',''),25));
+$smarty->assign('input_end_delimiter3',
+	$this->CreateInputText($id, 'end_delimiter3', $this->GetPreference('end_delimiter3',''),25));
 $smarty->assign('input_fix_internal_links',
 	$this->CreateInputCheckbox($id, 'fix_links', 1, $this->GetPreference('fix_links','1')).
 	$this->Lang('title_fix_internal_links'));

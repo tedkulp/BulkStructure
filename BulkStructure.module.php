@@ -50,7 +50,7 @@ class BulkStructure extends CMSModule
 
   function GetVersion()
   {
-    return '0.3';
+    return '0.4';
   }
 
   function GetHelp()
@@ -100,7 +100,7 @@ class BulkStructure extends CMSModule
 
   function MinimumCMSVersion()
   {
-    return "1.5";
+    return "1.6";
   }
 
   function GetEventDescription ( $eventname )
@@ -291,6 +291,7 @@ function reconcile_asset_links(&$asset_map, $aliases)
 function reconcile_url($base_host,$full_url,$link)
 {
 	$abs_url = '';
+	error_log("$base_host - $full_url - $link");
 	if (substr($link,0,5) == 'http:')
 		{
 		// fully qualified URL
@@ -309,9 +310,11 @@ function reconcile_url($base_host,$full_url,$link)
 	else
 		{
 		// relative URL
-		$rel = substr($url,0,strrpos($full_url,'/')).$link;
+		$rel = substr($full_url,0,strrpos($full_url,'/')).$link;
 		$abs_url = 'http://'.$base_host.$rel;
 		}
+	error_log("$abs_url");
+	
 	return $abs_url;
 }
 
@@ -325,15 +328,132 @@ function remove_comments($inp)
 	return true;
 }
 
+function str_replace_limit($search,$replace,$subject,$limit)
+	{
+    $len=strlen($search);    
+    $pos=0;
+    $replacing = true;
+	
+    while ($replacing && $limit > 0)
+		{
+        $pos=strpos($subject,$search,$pos);
+        if($pos!==false)
+			{                
+            $subject=substr($subject,0,$pos) . $replace .
+            	substr($subject,$pos+$len);
+			$limit -= 1;
+        	}
+		else
+			{
+			$replacing = false;
+			}
+        }
+    return $subject;
+	}
+
+
 function process_page($in=array())
 {
 	$ret = implode("\n",$in);
-	$sdel = $this->GetPreference('start_delimiter','/<body[^>]*>/i');
-    $edel = $this->GetPreference('end_delimiter','/<\/body>/i');
-	$ret = preg_replace($sdel,'X|XSTARTX|X',$ret);
-	$ret = preg_replace($edel,'X|XENDX|X',$ret);
-	$ret = substr($ret,stripos($ret,'X|XSTARTX|X')+11);
-    $ret = substr($ret,0,stripos($ret,'X|XENDX|X'));
+	
+	$i=1;
+	$seekingdel = true;
+	$foundsdel = false;
+	while ($seekingdel)
+		{
+		if ($i == 1)
+			{
+			$sdel = $this->GetPreference('start_delimiter1','/<body[^>]*>/i');
+			}
+		else
+			{
+			$sdel = $this->GetPreference('start_delimiter'.$i);
+			}
+		if ($sdel != '')
+			{
+			if (substr($sdel,0,1) == '/' && substr($sdel,-1,1) == '/')
+				{
+				// regex;
+				$ret = preg_replace($sdel,'X|XSTARTX|X',$ret);
+				}
+			else
+				{
+				// straight replace
+				$ret = $this->str_replace_limit($sdel,'X|XSTARTX|X',$ret,1);
+				}
+			}
+		if (strpos($ret,'X|XSTARTX|X') !== false)
+			{
+			$foundsdel = true;
+			$seekingdel = false;
+			}
+		else
+			{
+			$i+=1;
+			if ($i > 3)
+				{
+				$seekingdel = false;
+				}
+			}
+		}
+	if (!$foundsdel)
+		{
+		echo $this->Lang('no_start_delim');
+		}
+
+	$i=1;
+	$seekingdel = true;
+	$foundedel = false;
+	while ($seekingdel)
+		{
+		if ($i == 1)
+			{
+			$edel = $this->GetPreference('end_delimiter1','/<\/body>/i');
+			}
+		else
+			{
+			$edel = $this->GetPreference('end_delimiter'.$i);
+			}
+		if ($edel != '')
+			{
+			if (substr($edel,0,1) == '/' && substr($edel,-1,1) == '/')
+				{
+				// regex;
+				$ret = preg_replace($edel,'X|XENDX|X',$ret);
+				}
+			else
+				{
+				// straight replace
+				$ret = $this->str_replace_limit($edel,'X|XENDX|X',$ret,1);
+				}
+			}
+		if (strpos($ret,'X|XENDX|X') !== false)
+			{
+			$foundedel = true;
+			$seekingdel = false;
+			}
+		else
+			{
+			$i+=1;
+			if ($i > 3)
+				{
+				$seekingdel = false;
+				}
+			}
+		}
+	if (!$foundedel)
+		{
+		echo $this->Lang('no_end_delim');
+		}
+
+	if ($foundsdel)
+		{
+		$ret = substr($ret,stripos($ret,'X|XSTARTX|X')+11);
+		}
+	if ($foundedel)
+		{
+    	$ret = substr($ret,0,stripos($ret,'X|XENDX|X'));
+		}
 	if ($this->GetPreference('remove_scripts','0') == '1')
 		{
 		$ret = preg_replace('/<script/i','X|XSTARTX|X',$ret);
@@ -355,7 +475,6 @@ function process_page($in=array())
 		$ret = str_replace('X|XSTARTX|X','{ldelim}',$ret);
 		$ret = str_replace('X|XENDX|X','{rdelim}',$ret);
 		}
-
 	return $ret;
 }
   
