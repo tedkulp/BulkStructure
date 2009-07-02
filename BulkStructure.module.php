@@ -219,19 +219,21 @@ function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 		foreach($srced_links[1] as $link)
 			{
 			$abs_url = $this->reconcile_url($base['host'],$url,$link);
-				
-			if (isset($assetlist[$abs_url]) && $assetlist[$abs_url] != $alias)
+			if (strlen($abs_url) > 1)
 				{
-				$assetlist[$abs_url] = 'common';
-				}
-			else if (!isset($assetlist[$abs_url]))
-				{
-				$assetlist[$abs_url] = $alias;	
-				}
-			// mapped location
-			if (strrpos($abs_url,'/') !== false)
-				{
-				$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
+				if (isset($assetlist[$abs_url]) && $assetlist[$abs_url] != $alias)
+					{
+					$assetlist[$abs_url] = 'common';
+					}
+				else if (!isset($assetlist[$abs_url]))
+					{
+					$assetlist[$abs_url] = $alias;	
+					}
+				// mapped location
+				if (strrpos($abs_url,'/') !== false)
+					{
+					$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
+					}
 				}
 			}
 		}
@@ -267,6 +269,46 @@ function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 
 }
 
+function makeContentLink($alias)
+{
+	global $gCms;
+	if ($gCms->config["assume_mod_rewrite"])
+	{
+		return($gCms->config["root_url"]."/".$alias.
+			(isset($gCms->config['page_extension'])?$gCms->config['page_extension']:'.shtml'));
+	}
+	else
+	{
+		return($gCms->config["root_url"]."/index.php?".$gCms->config["query_var"]."=".$alias);
+	}
+}
+
+
+function reconcile_internal_links(&$page_map, $aliases)
+{
+	global $gCms;
+	$contentops =& $gCms->GetContentOperations();
+   
+	foreach($aliases as $thisAlias)
+		{
+		$page = $contentops->LoadContentFromAlias($thisAlias);
+		if ($page)
+			{
+			$cont = $page->GetPropertyValue('content_en');
+			foreach($page_map as $target=>$replacement)
+				{
+				$new_targ = $this->makeContentLink($replacement);
+				$cont = str_replace($target,$new_targ,$cont);
+				$rel_targ = substr($target,strpos($target,'/',3));
+				$cont = str_replace($rel_targ,$new_targ,$cont);
+				}
+			$page->SetPropertyValue('content_en',$cont);
+			$page->Save();
+			}
+		}
+
+}
+
 function reconcile_asset_links(&$asset_map, $aliases)
 {
 	global $gCms;
@@ -291,7 +333,6 @@ function reconcile_asset_links(&$asset_map, $aliases)
 function reconcile_url($base_host,$full_url,$link)
 {
 	$abs_url = '';
-	error_log("$base_host - $full_url - $link");
 	if (substr($link,0,5) == 'http:')
 		{
 		// fully qualified URL
@@ -313,7 +354,6 @@ function reconcile_url($base_host,$full_url,$link)
 		$rel = substr($full_url,0,strrpos($full_url,'/')).$link;
 		$abs_url = 'http://'.$base_host.$rel;
 		}
-	error_log("$abs_url");
 	
 	return $abs_url;
 }

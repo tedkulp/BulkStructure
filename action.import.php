@@ -50,6 +50,7 @@ else
    $assets = array();
    $asset_recon = array();
    $alias_list = array();
+   $page_map = array();
 
    foreach ($listing as $thisPage)
       {
@@ -117,7 +118,9 @@ else
 			$content = '';
 			foreach ($flist as $thisFetch)
 				{
-            	$fetched = $this->fetch_url(trim($thisFetch));
+				$thisFetch = trim($thisFetch);
+			    $page_map[$thisFetch]=$alias;
+            	$fetched = $this->fetch_url($thisFetch);
 				array_push($alias_list,$alias);
 	            if ($fetched !== false)
 	               {
@@ -128,7 +131,6 @@ else
                    $m_count += 1;
 	               }
 				}
-error_log(print_r($assets,true));;
 			   $contentobj->SetPropertyValue('content_en', $content);
                $populated_content = true;
             }
@@ -168,9 +170,12 @@ error_log(print_r($assets,true));;
       }
    if ($this->GetPreference('fetch_assets','0') == '1')
 		{
-			debug_display($assets);
-   		list($a_count,$a_len) = $this->fetch_assets($assets);
+  		list($a_count,$a_len) = $this->fetch_assets($assets);
 		$this->reconcile_asset_links($asset_recon,$alias_list);
+		}
+	if ($this->GetPreference('fix_links','0') == '1')
+		{
+		$this->reconcile_internal_links($page_map, $alias_list);
 		}
    echo "<br /><br /><strong>".$this->Lang('nag')."</strong><br />\n";
    $time_estimate = $p_count + $m_count * 5;

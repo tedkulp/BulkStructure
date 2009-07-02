@@ -166,6 +166,10 @@
 		<p class="pagetext">{$title_fix_smarty}:</p>
 		<p class="pageinput">{$input_fix_smarty}</p>
 	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_fix_internal_links}:</p>
+		<p class="pageinput">{$input_fix_internal_links}</p>
+	</div>
 	</fieldset>
 	<div class="pageoverflow">
 		<p class="pagetext">&nbsp;</p>
