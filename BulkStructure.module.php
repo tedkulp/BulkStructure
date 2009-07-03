@@ -401,6 +401,44 @@ function reconcile_url($base_host,$full_url,$link)
 	return $abs_url;
 }
 
+function lc_tags($string)
+{
+	$i = 0;
+	$conv = '';
+	$intag = false;
+	$inquote = false;
+	while ($i < strlen($string))
+		{
+		$c = substr($string,$i,1);
+		if (!$inquote && $c == '<')
+			{
+			$intag = true;
+			}
+		else if (!$inquote && $c == '"')
+			{
+			$inquote = true;
+			}
+		else if ($inquote && $c == '"')
+			{
+			$inquote = false;
+			}
+		else if ($intag && $c == '>')
+			{
+			$intag = false;
+			}
+		if ($intag && !$inquote)
+			{
+			$conv .= strtolower($c);
+			}
+		else
+			{
+			$conv .= $c;
+			}
+		$i+=1;
+		}
+	return $conv;
+}
+
 function remove_comments($inp)
 {
 	$s = substr($inp,0,1);
@@ -551,12 +589,28 @@ function process_page($in=array())
 		{
 		$ret = strip_tags($ret,$this->GetPreference('allowed_tags','<p><a><img><i><b><strong><em><ul><li><ol><sup><sub>'));
 		}
+	if ($this->GetPreference('lowercase_markup','0') == '1')
+		{
+		$ret = $this->lc_tags($ret);
+		}
 	if ($this->GetPreference('fix_smarty','0') == '1')
 		{
 		$ret = str_replace('{','X|XSTARTX|X',$ret);
 		$ret = str_replace('}','X|XENDX|X',$ret);
 		$ret = str_replace('X|XSTARTX|X','{ldelim}',$ret);
 		$ret = str_replace('X|XENDX|X','{rdelim}',$ret);
+		}
+	if ($this->GetPreference('substitutions') != '')
+		{
+		$subs = explode('|',$this->GetPreference('substitutions'));
+		foreach ($subs as $thisSub)
+			{
+			$sp = explode('~',$thisSub);
+			if (isset($sp[0]) && isset($sp[1]))
+				{
+				$ret = str_replace($sp[0],$sp[1],$ret);
+				}
+			}
 		}
 	return $ret;
 }

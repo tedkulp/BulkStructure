@@ -26,10 +26,12 @@ if (isset($params['submit']))
 		$this->SetPreference('asset_regex', trim($params['asset_regex']));
 		}
 	
+	$this->SetPreference('substitutions',(isset($params['substitutions'])?$params['substitutions']:''));
 	$this->SetPreference('links_rel',(isset($params['links_rel'])?$params['links_rel']:'0'));
 	$this->SetPreference('fix_links',(isset($params['fix_links'])?$params['fix_links']:'0'));
 	$this->SetPreference('fetch_assets',(isset($params['fetch_assets'])?$params['fetch_assets']:'0'));
 	$this->SetPreference('remove_markup',(isset($params['remove_markup'])?$params['remove_markup']:'0'));
+	$this->SetPreference('lowercase_markup',(isset($params['lowercase_markup'])?$params['lowercase_markup']:'0'));
 	$this->SetPreference('remove_scripts',(isset($params['remove_scripts'])?$params['remove_scripts']:'0'));
 	$this->SetPreference('fix_smarty',(isset($params['fix_smarty'])?$params['fix_smarty']:'0'));
 	$params['active_tab'] = 'settings';
@@ -47,11 +49,13 @@ $smarty->assign('tabheaders', $this->StartTabHeaders() .
 	$this->SetTabHeader('bulk',$this->Lang('bulk'),('bulk' == $tab)?true:false) .
 	$this->SetTabHeader('migrate',$this->Lang('migrate'),('migrate' == $tab)?true:false) .
 	$this->SetTabHeader('settings',$this->Lang('settings'),('settings' == $tab)?true:false) .
+	$this->SetTabHeader('substitutions',$this->Lang('substitutions'),('substitutions' == $tab)?true:false) .
 	$this->EndTabHeaders().
 	$this->StartTabContent());
 $smarty->assign('start_bulk',$this->StartTab('bulk'));
 $smarty->assign('start_settings',$this->StartTab('settings'));
 $smarty->assign('start_migrate',$this->StartTab('migrate'));
+$smarty->assign('start_substitutions',$this->StartTab('substitutions'));
 $smarty->assign('end_tab',$this->EndTab());
 $smarty->assign('end_tabs',$this->EndTabContent());
 
@@ -72,6 +76,7 @@ $smarty->assign('title_third',$this->Lang('title_third'));
 $smarty->assign('title_start_delimiter',$this->Lang('title_start_delimiter'));
 $smarty->assign('title_end_delimiter',$this->Lang('title_end_delimiter'));
 $smarty->assign('title_remove_markup',$this->Lang('title_remove_markup'));
+$smarty->assign('title_lowercase_markup',$this->Lang('title_lowercase_markup'));
 $smarty->assign('title_allowed_tags',$this->Lang('title_allowed_tags'));
 $smarty->assign('title_remove_scripts',$this->Lang('title_remove_scripts'));
 $smarty->assign('title_fix_smarty',$this->Lang('title_fix_smarty'));
@@ -89,6 +94,7 @@ $smarty->assign('title_fetch_assets',$this->Lang('title_fetch_assets'));
 $smarty->assign('title_asset_location',$this->Lang('title_asset_location'));
 $smarty->assign('title_asset_url',$this->Lang('title_asset_url'));
 $smarty->assign('title_asset_regex',$this->Lang('title_asset_regex'));
+$smarty->assign('title_substitutions',$this->Lang('title_substitutions'));
 
 $templateops =& $gCms->GetTemplateOperations();
 
@@ -126,6 +132,9 @@ $smarty->assign('input_asset_regex',$this->CreateInputText($id, 'asset_regex',
 $smarty->assign('input_remove_markup',
 	$this->CreateInputCheckbox($id, 'remove_markup', 1, $this->GetPreference('remove_markup','0')).
 	$this->Lang('title_remove_markup'));
+$smarty->assign('input_lowercase_markup',
+	$this->CreateInputCheckbox($id, 'lowercase_markup', 1, $this->GetPreference('lowercase_markup','0')).
+	$this->Lang('title_lowercase_markup'));
 $smarty->assign('input_remove_scripts',
 	$this->CreateInputCheckbox($id, 'remove_scripts', 1, $this->GetPreference('remove_scripts','0')).
 	$this->Lang('title_remove_scripts'));
@@ -141,6 +150,9 @@ $smarty->assign('input_delete_content',
 $smarty->assign('input_source_chooser','<input type="radio" name="structsource" value="file" id="filecheck" checked="checked" onclick="showstructsource(\'file\')"/><label for="filecheck">'.$this->Lang('file').'</label><input type="radio" name="structsource" value="field" id="fieldcheck" onclick="showstructsource(\'field\')"/><label for="fieldcheck">'.$this->Lang('form').'</label>');
 $smarty->assign('input_field',$this->CreateTextArea(false, $id, '', 'structure','','sample_structure'));
 $smarty->assign('load_link','<a href="javascript:getSample()">'.$this->Lang('load_sample').'</a>');
+$smarty->assign('input_substitutions',$this->CreateTextArea(false, $id, $this->GetPreference('substitutions','<br>~<br />|<hr>~<hr />'), 'substitutions'));
+
+
 
 $modLink = $this->CreateLink($id, 'get_sample', $returnid, '', array(), '', true);
 list($mod_path, $mod_param) = explode('?',$modLink);

@@ -100,12 +100,6 @@
 {$end_tab}
 {$start_settings_form}
 {$start_migrate}
-{* ... not yet implemented, and may well not be ...
-<div class="pageoverflow">
-	<p class="pagetext">{$title_fix_internal_links}:</p>
-	<p class="pageinput">{$input_fix_internal_links}</p>
-</div>
-*}
 <div class="pageoverflow">
 	<p class="pagetext">{$title_fetch_assets}:</p>
 	<p class="pageinput">{$input_fetch_assets}</p>
@@ -155,6 +149,10 @@
 		<p class="pageinput">{$input_remove_markup}</p>
 	</div>
 	<div class="pageoverflow">
+		<p class="pagetext">{$title_lowercase_markup}:</p>
+		<p class="pageinput">{$input_lowercase_markup}</p>
+	</div>
+	<div class="pageoverflow">
 		<p class="pagetext">{$title_allowed_tags}:</p>
 		<p class="pageinput">{$input_allowed_tags}</p>
 	</div>
@@ -180,5 +178,18 @@
 		<p class="pageinput">{$submit}</p>
 	</div>
 </fieldset>
+{$end_tab}
+{$start_substitutions}
+<p>{$title_substitutions_help}</p>
+<div class="pageoverflow">
+	<p class="pagetext">{$title_substitutions}:</p>
+	<p class="pageinput">{$input_substitutions}</p>
+</div>
+<div class="pageoverflow">
+	<p class="pagetext">&nbsp;</p>
+	<p class="pageinput">{$submit}</p>
+</div>
+
+{$end_tab}
 {$end_form}
 {$end_tabs}
