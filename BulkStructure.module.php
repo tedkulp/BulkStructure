@@ -343,6 +343,8 @@ function reconcile_internal_links(&$page_map, $aliases)
 				$cont = str_replace($target,$new_targ,$cont);
 				$rel_targ = substr($target,strpos($target,'/',3));
 				$cont = str_replace($rel_targ,$new_targ,$cont);
+				$nonwww = str_replace('www.','',$target);
+				$cont = str_replace($nonwww,$new_targ,$cont);
 				}
 			$page->SetPropertyValue('content_en',$cont);
 			$page->Save();
