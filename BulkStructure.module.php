@@ -295,6 +295,26 @@ function makeContentLink($alias, $site_relative=true, $anchor='')
 	}
 }
 
+function makeAssetLink($url, $site_relative=true)
+{
+	global $gCms;
+	
+	if (!$site_relative)
+		{
+		return $url;
+		}
+	if (strpos($url,$gCms->config['root_url']) == 0)
+		{
+		$url = substr($url,strlen($gCms->config['root_url']));
+		}
+	if (substr($url,0,1) != '/')
+		{
+		$url = '/'.$url;
+		}
+	return $url;
+}
+
+
 function leading_substr_count($string,$delim)
 {
 	$i = 0;
@@ -344,7 +364,8 @@ function reconcile_asset_links(&$asset_map, $aliases)
 			$cont = $page->GetPropertyValue('content_en');
 			foreach($asset_map as $target=>$replacement)
 				{
-				$cont = str_replace($target,$replacement,$cont);
+				$new_targ = $this->makeAssetLink($replacement,($this->GetPreference('links_rel','1') == '1'));
+				$cont = str_replace($target,$new_targ,$cont);
 				}
 			$page->SetPropertyValue('content_en',$cont);
 			$page->Save();
