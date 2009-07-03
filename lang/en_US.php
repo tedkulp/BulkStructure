@@ -26,6 +26,7 @@ $lang['title_fix_smarty'] = 'Try to fix things that will hose smarty?';
 $lang['title_fix_smarty_help'] = 'Replace curly-braces with smarty delimiters';
 $lang['title_cleanup'] = 'Migrated content cleanup options';
 $lang['title_fix_internal_links'] = 'Fix internal content links';
+$lang['title_internal_links_rel'] = 'Make fixed links site-relative';
 $lang['title_fetch_assets'] = 'Fetch assets for migrated pages';
 $lang['title_asset_location'] = 'Fetched asset location';
 $lang['title_asset_url'] = 'Fetched asset URL';

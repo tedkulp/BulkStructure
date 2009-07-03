@@ -269,18 +269,40 @@ function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 
 }
 
-function makeContentLink($alias)
+function makeContentLink($alias, $site_relative=true, $anchor='')
 {
 	global $gCms;
+	
+	if ($site_relative)
+		{
+		$root = parse_url($gCms->config["root_url"]);
+		$base = (isset($root['path'])?$root['path']:'');
+		}
+	else
+		{
+		$base = $gCms->config["root_url"];
+		}
+	
 	if ($gCms->config["assume_mod_rewrite"])
 	{
-		return($gCms->config["root_url"]."/".$alias.
-			(isset($gCms->config['page_extension'])?$gCms->config['page_extension']:'.shtml'));
+		return($base."/".$alias.
+			(isset($gCms->config['page_extension'])?$gCms->config['page_extension']:'.shtml').
+			($anchor!=''?'#'.$anchor:''));
 	}
 	else
 	{
-		return($gCms->config["root_url"]."/index.php?".$gCms->config["query_var"]."=".$alias);
+		return($base."/index.php?".$gCms->config["query_var"]."=".$alias.($anchor!=''?'#'.$anchor:''));
 	}
+}
+
+function leading_substr_count($string,$delim)
+{
+	$i = 0;
+	while (substr($string,$i,1) == $delim)
+		{
+		$i++;
+		}
+	return $i;
 }
 
 
@@ -297,7 +319,7 @@ function reconcile_internal_links(&$page_map, $aliases)
 			$cont = $page->GetPropertyValue('content_en');
 			foreach($page_map as $target=>$replacement)
 				{
-				$new_targ = $this->makeContentLink($replacement);
+				$new_targ = $this->makeContentLink($replacement,($this->GetPreference('links_rel','1') == '1'));
 				$cont = str_replace($target,$new_targ,$cont);
 				$rel_targ = substr($target,strpos($target,'/',3));
 				$cont = str_replace($rel_targ,$new_targ,$cont);

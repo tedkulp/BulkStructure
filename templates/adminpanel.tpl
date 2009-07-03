@@ -170,6 +170,10 @@
 		<p class="pagetext">{$title_fix_internal_links}:</p>
 		<p class="pageinput">{$input_fix_internal_links}</p>
 	</div>
+	<div class="pageoverflow">
+		<p class="pagetext">{$title_internal_links_rel}:</p>
+		<p class="pageinput">{$input_internal_links_rel}</p>
+	</div>
 	</fieldset>
 	<div class="pageoverflow">
 		<p class="pagetext">&nbsp;</p>

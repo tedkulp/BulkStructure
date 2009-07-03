@@ -77,7 +77,7 @@ else
 		    }
 
          $details = explode('|',$thisPage);
-         $thisdepth = substr_count($details[0],'-');
+         $thisdepth =  $this->leading_substr_count($details[0],'-');
          $name = preg_replace('/^[-]+/','',$details[0]);
  		 if ($mtext == '')
 			{

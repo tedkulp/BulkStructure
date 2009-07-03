@@ -26,6 +26,7 @@ if (isset($params['submit']))
 		$this->SetPreference('asset_regex', trim($params['asset_regex']));
 		}
 	
+	$this->SetPreference('links_rel',(isset($params['links_rel'])?$params['links_rel']:'0'));
 	$this->SetPreference('fix_links',(isset($params['fix_links'])?$params['fix_links']:'0'));
 	$this->SetPreference('fetch_assets',(isset($params['fetch_assets'])?$params['fetch_assets']:'0'));
 	$this->SetPreference('remove_markup',(isset($params['remove_markup'])?$params['remove_markup']:'0'));
@@ -83,6 +84,7 @@ $smarty->assign('title_source_chooser',$this->Lang('title_source_chooser'));
 $smarty->assign('title_cleanup',$this->Lang('title_cleanup'));
 $smarty->assign('title_delimiters',$this->Lang('title_delimiters'));
 $smarty->assign('title_fix_internal_links',$this->Lang('title_fix_internal_links'));
+$smarty->assign('title_internal_links_rel',$this->Lang('title_internal_links_rel'));
 $smarty->assign('title_fetch_assets',$this->Lang('title_fetch_assets'));
 $smarty->assign('title_asset_location',$this->Lang('title_asset_location'));
 $smarty->assign('title_asset_url',$this->Lang('title_asset_url'));
@@ -109,6 +111,9 @@ $smarty->assign('input_end_delimiter3',
 $smarty->assign('input_fix_internal_links',
 	$this->CreateInputCheckbox($id, 'fix_links', 1, $this->GetPreference('fix_links','1')).
 	$this->Lang('title_fix_internal_links'));
+$smarty->assign('input_internal_links_rel',
+	$this->CreateInputCheckbox($id, 'links_rel', 1, $this->GetPreference('links_rel','1')).
+	$this->Lang('title_internal_links_rel'));
 $smarty->assign('input_fetch_assets',
 	$this->CreateInputCheckbox($id, 'fetch_assets', 1, $this->GetPreference('fetch_assets','0')).
 	$this->Lang('title_fetch_assets_help'));
