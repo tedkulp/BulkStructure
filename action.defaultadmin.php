@@ -95,6 +95,8 @@ $smarty->assign('title_asset_location',$this->Lang('title_asset_location'));
 $smarty->assign('title_asset_url',$this->Lang('title_asset_url'));
 $smarty->assign('title_asset_regex',$this->Lang('title_asset_regex'));
 $smarty->assign('title_substitutions',$this->Lang('title_substitutions'));
+$smarty->assign('title_substitutions_help',$this->Lang('title_substitutions_help'));
+
 
 $templateops =& $gCms->GetTemplateOperations();
 
