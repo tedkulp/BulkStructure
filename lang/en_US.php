@@ -57,7 +57,7 @@ $lang['updated_settings'] = 'Updated Migration settings.';
 $lang['nag'] = 'Annoying Nagging from the Author';
 $lang['pages_done'] = '<p>You just populated a site with %s pages:<br />%s placeholders<br />%s migrated from an extant site; you also transfered %s site graphics/assets (%s bytes).</p><p>Assuming it takes you 1 minute to create a placeholder page, and 5 minutes to migrate a page from another site, <strong>you just saved %s minutes -- at US$35/hour, you just saved at least US$%s!</strong></p>';
 $lang['changelog'] = '<ul>
-<li>Version 0.4, June 2009 SjG, Improved handling of start/end tagging of fetched pages.</li>
+<li>Version 0.4, June 2009 SjG, Improved handling of start/end tagging of fetched pages, substitutions, link-reconciliation.</li>
 <li>Version 0.3, Mar 2009 SjG, Added asset fetching and link reconciliation. This is actually becoming useful at this point.</li>
 <li>Version 0.2, Feb 2009 SjG, Bug fixes with page alias generation, lots of site migration improvements, added annoying nagware because I am an annoying person.</li>
 <li>Version 0.1, Feb 2009 SjG, Initial Version</li>
