@@ -50,7 +50,7 @@ class BulkStructure extends CMSModule
 
   function GetVersion()
   {
-    return '0.4';
+    return '0.5';
   }
 
   function GetHelp()
@@ -100,7 +100,7 @@ class BulkStructure extends CMSModule
 
   function MinimumCMSVersion()
   {
-    return "1.6";
+    return "1.9";
   }
 
   function GetEventDescription ( $eventname )
