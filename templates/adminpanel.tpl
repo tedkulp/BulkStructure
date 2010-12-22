@@ -2,63 +2,60 @@
 <script type="text/javascript">
 /* <![CDATA[ */
 	function getSample()
-		{		
-		var selector = document.getElementById('sample_structure');
+	{		
+		var selector = $('#sample_structure');
 		if (selector)
-			{
+		{
 			var url = '{/literal}{$mod_path}{literal}';
 			var pars = '{/literal}{$mod_param}{literal}';
 		
-			var myAjax = new Ajax.Request(
-				url, 
-				{
+			$.ajax(
+			{
 					method: 'get', 
-					parameters: pars,
-					onFailure: reportError,
-					onComplete: replaceSample
-				});		
-			}
+					url: url,
+					data: pars,
+					cache: false,
+					success: function(msg)
+					{
+						$('#sample_structure').val(msg);
+					},
+					failure: function(msg)
+					{
+						alert('Sorry. There was an error.');
+					}
+			});		
 		}
-	function reportError(request)
-		{
-			alert('Sorry. There was an error.');
-		}
-
-	function replaceSample(originalRequest)
-		{
-			//put returned sample in the textarea
-			$('sample_structure').value = originalRequest.responseText;
-		}
+	}
 
 	function vcheck()
-		{
+	{
 		var cb = document.getElementById('del_cont_check');
 		if (cb && cb.checked)
-			{
+		{
 			if (!confirm('{/literal}{$title_delete_sure}{literal}'))
-				{
+			{
 				cb.checked = false;
-				}
 			}
 		}
+	}
 	function showstructsource(source)
-		{
+	{
 		var fil = document.getElementById('blfile');
 		var fld = document.getElementById('blfield');
 		if (fil && fld)
-			{
+		{
 			if (source == 'field')
-				{
+			{
 				fil.style.display='none';
 				fld.style.display='block';
-				}
+			}
 			else
-				{
+			{
 				fil.style.display='block';
 				fld.style.display='none';
-				}
 			}
 		}
+	}
 /* ]]> */	
 </script>
 {/literal}
