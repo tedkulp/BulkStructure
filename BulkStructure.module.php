@@ -167,17 +167,20 @@ function fetch_assets(&$asset_list)
 		{
 		if (!mkdir($asset_dir))
 			{
+				var_dump('failed');
 			echo $this->Lang('fail_dir',$asset_dir);
 			return false;
 			}
 		}
 	foreach ($asset_list as $url=>$alias)
 		{
+			var_dump($url, $alias);
 		$target_dir = $asset_dir.DIRECTORY_SEPARATOR.$alias;
 		if (!file_exists($target_dir))
 			{
-			if (!mkdir($target_dir))
+			if (!mkdir($target_dir, 0777, true))
 				{
+					var_dump("failed to create dir");
 				echo $this->Lang('fail_dir',$target_dir);
 				return false;
 				}
@@ -190,7 +193,9 @@ function fetch_assets(&$asset_list)
 			$tf = curl_exec($ch);
 			if (curl_errno($ch))
 				{
-				return false;
+					//return false;
+					//Move on
+					continue;
 				}
 			curl_close($ch);
 			}
@@ -207,9 +212,10 @@ function fetch_assets(&$asset_list)
 	return array($count,$len);
 }
 
-function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
+function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon,$parent_path = '')
 {
 	global $gCms;
+	var_dump($parent_path . $alias);
 	$srced_links = array();
 	$base = parse_url($url);
 	$destbase = $this->GetPreference('asset_url',$gCms->config['uploads_url'].'/'.$this->Lang('migrate_dir'));
@@ -227,12 +233,12 @@ function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 					}
 				else if (!isset($assetlist[$abs_url]))
 					{
-					$assetlist[$abs_url] = $alias;	
+					$assetlist[$abs_url] = $parent_path . $alias;	
 					}
 				// mapped location
 				if (strrpos($abs_url,'/') !== false)
 					{
-					$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
+					$asset_recon[$link] = $destbase.'/'. $parent_path . $alias .'/'.substr($abs_url,strrpos($abs_url,'/')+1);
 					}
 				}
 			}
@@ -255,12 +261,12 @@ function identify_assets($url,$content,$alias,&$assetlist,&$asset_recon)
 						}
 					else if (!isset($assetlist[$abs_url]))
 						{
-						$assetlist[$abs_url] = $alias;	
+						$assetlist[$abs_url] = $parent_path . $alias;	
 						}
 					// mapped location
 					if (strrpos($abs_url,'/') !== false)
 						{
-						$asset_recon[$link] = $destbase.'/'.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
+						$asset_recon[$link] = $destbase.'/'.$parent_path.$alias.'/'.substr($abs_url,strrpos($abs_url,'/')+1);
 						}
 					}
 				}
@@ -618,4 +624,3 @@ function process_page($in=array())
 }
   
 }
-?>

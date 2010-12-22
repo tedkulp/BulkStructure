@@ -13,4 +13,3 @@ if (!isset($gCms)) exit;
     header('Content-Length: ' . strlen($tplstr));
     echo $tplstr;
     exit;
-?>

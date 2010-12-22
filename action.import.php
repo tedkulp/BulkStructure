@@ -3,6 +3,8 @@ if (!isset($gCms)) exit;
 
 set_time_limit(0);
 
+$db = $gCms->GetDb();
+
 if (empty($params['structure']) && !empty($_FILES[$id.'ulfile']['error']))
    {
    echo $this->Lang('upload_error',$_FILES[$id.'ulfile']['error']);
@@ -42,6 +44,7 @@ else
 
    $prevdepth = 0;
    $parents = array();
+   $parent_paths = array();
    $p_count = 0;
    $a_count = 0;
    $a_len = 0;
@@ -119,14 +122,14 @@ else
 			foreach ($flist as $thisFetch)
 				{
 				$thisFetch = trim($thisFetch);
-			    $page_map[$thisFetch]=$alias;
+			    $page_map[$thisFetch] = (isset($parent_paths[$thisdepth-1])?$parent_paths[$thisdepth-1] . '/':'') . $alias;
             	$fetched = $this->fetch_url($thisFetch);
 				array_push($alias_list,$alias);
 	            if ($fetched !== false)
 	               {
 				   $cont = '';
 	               $cont = $this->process_page($fetched);
-				   $this->identify_assets($thisFetch,$cont,$alias,$assets,$asset_recon);
+				   $this->identify_assets($thisFetch,$cont,$alias,$assets,$asset_recon,(isset($parent_paths[$thisdepth-1])?$parent_paths[$thisdepth-1] . '/':''));
 				   $content .= $cont;
                    $m_count += 1;
 	               }
@@ -165,6 +168,9 @@ else
          $contentobj->Save();
          $parents[$thisdepth] = $contentobj->Id();
          $contentops->SetAllHierarchyPositions();
+		 //Path doesn't exist in the object yet, so just grab it from the
+		 //database
+		 $parent_paths[$thisdepth] = $db->GetOne("SELECT hierarchy_path FROM ".cms_db_prefix()."content WHERE content_id = ?", array($contentobj->Id()));
          echo $this->Lang('created',$name)."<br />\n";
          }
       }
@@ -191,4 +197,3 @@ else
 </form>
 ';
    }
-?>
